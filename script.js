@@ -44,13 +44,13 @@ function update() {
     if (ball.y >= HEIGHT - ballSize / 2 || ball.y <= ballSize / 2) {
         yspeed *= -1;
         adjustBall(); // Increase speed and reduce ball size
-        lives-=1
+        decreaseLives();
     }
 
     if (ball.x >= WIDTH - ballSize / 2 || ball.x <= ballSize / 2) {
         xspeed *= -1;
         adjustBall();// Increase speed and reduce ball size
-        lives-=1
+        decreaseLives();
     }
 }
 
