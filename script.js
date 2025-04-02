@@ -1,32 +1,6 @@
 let WIDTH = 800;
 let HEIGHT = 600;
 
-function update() {
-    ball.y += yspeed;
-    ball.x += xspeed;
-
-    if (ball.y >= HEIGHT - ballSize / 2 || ball.y <= ballSize / 2) {
-        yspeed *= -1; // Reverse direction
-        enhanceBall(); // Call function to increase speed and decrease size
-    }
-
-    if (ball.x >= WIDTH - ballSize / 2 || ball.x <= ballSize / 2) {
-        xspeed *= -1; // Reverse direction
-        enhanceBall(); // Call function to increase speed and decrease size
-    }
-}
-
-function enhanceBall() {
-    // Increase the speed slightly
-    yspeed *= 1.1; // Increase vertical speed by 10%
-    xspeed *= 1.1; // Increase horizontal speed by 10%
-
-    // Decrease the size of the ball
-    ballSize = Math.max(20, ballSize - 5); // Ensure the size doesn't go below 20
-    ball.setDisplaySize(ballSize, ballSize); // Update the display size of the ball
-}
-
-
 const config = {
     type: Phaser.AUTO,
     width: WIDTH,
@@ -55,6 +29,10 @@ function create() {
     ball = this.add.sprite(WIDTH / 2, HEIGHT / 2, "ball"); // Create ball sprite
     ball.setDisplaySize(ballSize, ballSize); // Set the display size of the ball
 
+    // Enable ball to detect mouse interactions
+    ball.setInteractive();
+    ball.on('pointerdown', increaseSpeedAndLives); // Add a click event listener
+
     // Display lives on the screen
     livesText = this.add.text(20, 20, `Lives: ${lives}`, { font: "24px Arial", fill: "#ffffff" });
 }
@@ -65,22 +43,41 @@ function update() {
 
     if (ball.y >= HEIGHT - ballSize / 2 || ball.y <= ballSize / 2) {
         yspeed *= -1;
-        decreaseLives(); // Call function to decrease lives
+        adjustBall(); // Increase speed and reduce ball size
     }
 
     if (ball.x >= WIDTH - ballSize / 2 || ball.x <= ballSize / 2) {
         xspeed *= -1;
-        decreaseLives(); // Call function to decrease lives
+        adjustBall(); // Increase speed and reduce ball size
     }
+}
+
+function adjustBall() {
+    // Increase the speed slightly
+    yspeed *= 1.1;
+    xspeed *= 1.1;
+
+    // Decrease ball size with a minimum limit to avoid disappearing
+    ballSize = Math.max(20, ballSize - 5);
+    ball.setDisplaySize(ballSize, ballSize); // Update size of the ball
+}
+
+function increaseSpeedAndLives() {
+    // Increase the ball's speed
+    yspeed *= 1.2;
+    xspeed *= 1.2;
+
+    // Add one life
+    lives++;
+    livesText.setText(`Lives: ${lives}`);
 }
 
 function decreaseLives() {
     if (lives > 0) {
-        lives--; // Decrease lives by 1
-        livesText.setText(`Lives: ${lives}`); // Update the display
+        lives--;
+        livesText.setText(`Lives: ${lives}`);
     } else {
-        // Game over logic
         console.log("Game Over");
-        this.scene.pause(); // Pause the game (optional)
+        this.scene.pause();
     }
 }
