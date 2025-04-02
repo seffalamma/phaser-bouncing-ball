@@ -20,6 +20,7 @@ let yspeed = 0.5;
 let xspeed = 1.0;
 let lives = 10; // Initialize lives to 10
 let livesText;
+let endGameText; // Variable to store the "End Game" sign
 
 function preload() {
     this.load.image("ball", "assets/ball.png"); // Ensure the file path is correct
@@ -35,6 +36,12 @@ function create() {
 
     // Display lives on the screen
     livesText = this.add.text(20, 20, `Lives: ${lives}`, { font: "24px Arial", fill: "#ffffff" });
+
+    // Initialize "End Game" sign but keep it invisible
+    endGameText = this.add.text(WIDTH / 2, HEIGHT / 2, 'Game Over', { 
+        font: "48px Arial", 
+        fill: "#ff0000" 
+    }).setOrigin(0.5).setVisible(false);
 }
 
 function update() {
@@ -49,7 +56,7 @@ function update() {
 
     if (ball.x >= WIDTH - ballSize / 2 || ball.x <= ballSize / 2) {
         xspeed *= -1;
-        adjustBall();// Increase speed and reduce ball size
+        adjustBall(); // Increase speed and reduce ball size
         decreaseLives();
     }
 }
@@ -80,6 +87,7 @@ function decreaseLives() {
         livesText.setText(`Lives: ${lives}`);
     } else {
         console.log("Game Over");
-        this.scene.pause();
+        this.scene.pause(); // Pause the game
+        endGameText.setVisible(true); // Make "Game Over" sign visible
     }
 }
