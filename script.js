@@ -59,7 +59,20 @@ function create() {
 }
 
 function update() {
-    // Add logic for other features (e.g., lives system or end game)
+    ball.y += yspeed;
+    ball.x += xspeed;
+
+    if (ball.y >= HEIGHT - ballSize / 2 || ball.y <= ballSize / 2) {
+        yspeed *= -1;
+        randomizeMovement();
+        adjustBall();
+    }
+
+    if (ball.x >= WIDTH - ballSize / 2 || ball.x <= ballSize / 2) {
+        xspeed *= -1;
+        randomizeMovement();
+        adjustBall();
+    }// Add logic for other features (e.g., lives system or end game)
 }
 
 function handleBallClick(pointer) {
@@ -76,6 +89,60 @@ function handleBallClick(pointer) {
     // Add one life
     lives++;
     livesText.setText(`Lives: ${lives}`);
+}
+
+function adjustBall() {
+    // Decrease ball size with a minimum limit to avoid disappearing
+    ballSize = Math.max(20, ballSize - 5);
+    ball.setDisplaySize(ballSize, ballSize); // Update size of the ball
+}
+
+function randomizeMovement() {
+    xspeed = (Math.random() * 4 - 2).toFixed(2); // Random float between -2 and 2
+    yspeed = (Math.random() * 4 - 2).toFixed(2);
+
+    if (xspeed == 0) xspeed = 1.0;
+    if (yspeed == 0) yspeed = 1.0;
+}
+
+function handleBallClick() {
+    // Reset the timer when the ball is clicked
+    resetTimer.call(this);
+
+    // Increase speed and add one life
+    yspeed *= 1.2;
+    xspeed *= 1.2;
+    lives++;
+    livesText.setText(`Lives: ${lives}`);
+}
+
+function decreaseLives() {
+    if (lives > 0) {
+        lives--;
+        livesText.setText(`Lives: ${lives}`);
+    } else {
+        console.log("Game Over");
+        this.scene.pause(); // Pause the game
+        endGameText.setVisible(true); // Make "Game Over" sign visible
+        resetButton.setVisible(true); // Show the reset button
+    }
+}
+
+function startTimer() {
+    // Set a timer that decreases lives if the ball is not clicked
+    timer = this.time.addEvent({
+        delay: 3000, // 3 seconds countdown
+        loop: true,
+        callback: () => {
+            decreaseLives(); // Deduct a life if the timer completes
+        }
+    });
+}
+
+function resetTimer() {
+    // Reset the timer when the ball is clicked
+    timer.remove(); // Stop the current timer
+    startTimer.call(this); // Start a new timer
 }
 
 function resetGame() {
