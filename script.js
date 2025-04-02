@@ -66,9 +66,6 @@ function adjustBall() {
     yspeed *= 1.1;
     xspeed *= 1.1;
 
-    // Decrease ball size with a minimum limit to avoid disappearing
-    ballSize = Math.max(20, ballSize - 5);
-    ball.setDisplaySize(ballSize, ballSize); // Update size of the ball
 }
 
 function increaseSpeedAndLives() {
